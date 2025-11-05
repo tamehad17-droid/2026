@@ -1,0 +1,15 @@
+{
+  "name": "PromoHive",
+  "short_name": "PromoHive",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#00D4FF",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

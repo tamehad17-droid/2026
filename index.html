@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>PromoHive - Global Promo Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#00D4FF" />
+  <meta name="description" content="Earn money by completing tasks, referring friends, and participating in promotional activities. Join PromoHive today!" />
+  <meta name="keywords" content="earn money, tasks, referrals, USDT, crypto earnings, promotional network" />
+  <meta property="og:title" content="PromoHive - Global Promo Network" />
+  <meta property="og:description" content="Earn money by completing tasks and referring friends" />
+  <meta property="og:image" content="/assets/logo-light.png" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Lightweight filter to prevent loud warnings from Rocket when unrelated postMessage events are emitted
+       Some libraries or integrations may post messages with a type that Rocket doesn't recognise (eg. USER_INTERACTION).
+       We stop propagation for those specific messages so Rocket doesn't log repeated 'Unknown message type' warnings.
+       Keep this minimal and targeted to avoid interfering with other integrations. -->
+  <script>
+    (function(){
+      try {
+        window.addEventListener('message', function (ev) {
+          try {
+            const d = ev && ev.data;
+            if (!d) return;
+            // Filter messages that are plain objects containing a type we don't want Rocket to handle
+            if (typeof d === 'object' && d !== null && d.type === 'USER_INTERACTION') {
+              // Prevent other listeners (including rocket-web) from receiving this event
+              ev.stopImmediatePropagation?.();
+              ev.preventDefault?.();
+              return;
+            }
+          } catch (e) {
+            // swallow errors
+          }
+        }, true); // use capture so we run before other listeners
+      } catch (e) {
+        // ignore
+      }
+    })();
+  </script>
+  <!-- Rocket scripts disabled to prevent noisy console logs and conflicts with our task handlers.
+    Re-enable only if Rocket integration is required and configured correctly. -->
+  <!-- <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fpromohive8973back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.9"></script>
+  <script type="module" src="https://static.rocket.new/rocket-shot.js?v=0.0.1"></script> -->
+  </head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div class="dhiwise-code" id="root"></div>
+  <script type="module" src="/src/index.jsx"></script>
+</body>
+
+</html>

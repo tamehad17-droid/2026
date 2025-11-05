@@ -1,0 +1,180 @@
+import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+
+serve(async (req) => {
+  // CORS preflight
+  if (req?.method === "OPTIONS") {
+    return new Response("ok", {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "*"
+      }
+    });
+  }
+  
+  try {
+    // Get environment variables
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const ADGEM_POSTBACK_KEY = Deno.env.get('ADGEM_POSTBACK_KEY');
+    
+    // Parse URL parameters
+    const url = new URL(req.url);
+    const params = {
+      appid: url.searchParams.get('appid'),
+      userid: url.searchParams.get('userid'),
+      offerid: url.searchParams.get('offerid'),
+      amount: url.searchParams.get('amount'),
+      payout: url.searchParams.get('payout'),
+      transaction_id: url.searchParams.get('transaction_id'),
+      offer_name: url.searchParams.get('offer_name'),
+      country: url.searchParams.get('country'),
+      platform: url.searchParams.get('platform')
+    };
+    
+    // Validate required parameters
+    if (!params.userid || !params.offerid || !params.payout || !params.transaction_id) {
+      return new Response(JSON.stringify({
+        error: "Missing required parameters",
+        required: ["userid", "offerid", "payout", "transaction_id"]
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    
+    // Create Supabase client
+    const supabase = createClient(
+      SUPABASE_URL!,
+      SUPABASE_SERVICE_ROLE_KEY!
+    );
+    
+    // Convert payout to number
+    const payoutAmount = parseFloat(params.payout || '0');
+    
+    // Get user profile and level
+    const { data: userProfile, error: userError } = await supabase
+      .from('user_profiles')
+      .select('id, level, full_name, email')
+      .eq('id', params.userid)
+      .single();
+    
+    if (userError || !userProfile) {
+      console.error('User not found:', params.userid);
+      return new Response(JSON.stringify({
+        error: "User not found",
+        userid: params.userid
+      }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    
+    // Calculate user reward based on level (10% - 85%)
+    const percentages: { [key: number]: number } = {
+      0: 0.10,
+      1: 0.25,
+      2: 0.40,
+      3: 0.55,
+      4: 0.70
+    };
+    const percentage = userProfile.level >= 5 ? 0.85 : (percentages[userProfile.level] || 0.10);
+    const userReward = parseFloat((payoutAmount * percentage).toFixed(2));
+    
+    // Check if transaction already processed
+    const { data: existingTransaction } = await supabase
+      .from('transactions')
+      .select('id')
+      .eq('reference_id', params.transaction_id)
+      .eq('reference_type', 'adgem_postback')
+      .single();
+    
+    if (existingTransaction) {
+      console.log('Transaction already processed:', params.transaction_id);
+      return new Response(JSON.stringify({
+        status: "already_processed",
+        transaction_id: params.transaction_id
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    
+    // Create transaction record
+    const { data: transaction, error: transactionError } = await supabase
+      .from('transactions')
+      .insert({
+        user_id: params.userid,
+        type: 'earning',
+        amount: userReward,
+        status: 'completed',
+        description: `AdGem offer completed: ${params.offer_name || params.offerid}`,
+        reference_type: 'adgem_postback',
+        reference_id: params.transaction_id,
+        admin_notes: JSON.stringify({
+          real_payout: payoutAmount,
+          user_percentage: percentage * 100,
+          user_level: userProfile.level,
+          offer_id: params.offerid,
+          country: params.country,
+          platform: params.platform
+        })
+      })
+      .select()
+      .single();
+    
+    if (transactionError) {
+      console.error('Transaction creation error:', transactionError);
+      throw transactionError;
+    }
+    
+    // Update user balance
+    const { error: balanceError } = await supabase.rpc('increment_user_balance', {
+      user_uuid: params.userid,
+      amount: userReward
+    });
+    
+    if (balanceError) {
+      console.error('Balance update error:', balanceError);
+      await supabase
+        .from('transactions')
+        .update({ status: 'failed', admin_notes: 'Balance update failed' })
+        .eq('id', transaction.id);
+      
+      throw balanceError;
+    }
+    
+    // Log success
+    console.log('AdGem postback processed successfully:', {
+      user: params.userid,
+      offer: params.offerid,
+      real_payout: payoutAmount,
+      user_reward: userReward,
+      level: userProfile.level,
+      percentage: percentage * 100
+    });
+    
+    // Return success response to AdGem
+    return new Response(JSON.stringify({
+      status: "success",
+      transaction_id: params.transaction_id,
+      user_reward: userReward,
+      message: "Postback processed successfully"
+    }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
+    
+  } catch (error) {
+    console.error("AdGem postback error:", error);
+    
+    return new Response(JSON.stringify({
+      error: "Failed to process postback",
+      details: error.message
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+});

@@ -1,0 +1,82 @@
+═══════════════════════════════════════════════════════════════
+⚠️ مهم جداً - نفذ هذا SQL أولاً قبل أي شيء!
+═══════════════════════════════════════════════════════════════
+
+🔗 افتح هذا الرابط:
+https://supabase.com/dashboard/project/jtxmijnxrgcwjvtdlgxy/sql/new
+
+📝 انسخ والصق كل الكود من ملف:
+FIX_VERIFICATION_FUNCTION.sql
+
+🎯 أو انسخ هذا مباشرة:
+
+═══════════════════════════════════════════════════════════════
+
+-- 1. Generate verification code function
+CREATE OR REPLACE FUNCTION public.generate_verification_code()
+RETURNS TEXT LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+    RETURN LPAD(FLOOR(RANDOM() * 100000)::TEXT, 5, '0');
+END; $$;
+
+-- 2. Create verification code function
+CREATE OR REPLACE FUNCTION public.create_verification_code(user_email TEXT, user_uuid UUID)
+RETURNS TEXT LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE verification_code TEXT;
+BEGIN
+    verification_code := public.generate_verification_code();
+    UPDATE public.email_verification_codes 
+    SET verified = true 
+    WHERE user_id = user_uuid AND verified = false;
+    INSERT INTO public.email_verification_codes (user_id, email, code, expires_at)
+    VALUES (user_uuid, user_email, verification_code, CURRENT_TIMESTAMP + INTERVAL '10 minutes');
+    RETURN verification_code;
+END; $$;
+
+-- 3. Verify email code function
+CREATE OR REPLACE FUNCTION public.verify_email_code(user_uuid UUID, input_code TEXT)
+RETURNS BOOLEAN LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE code_record RECORD; is_valid BOOLEAN := false;
+BEGIN
+    SELECT * INTO code_record FROM public.email_verification_codes
+    WHERE user_id = user_uuid AND verified = false AND expires_at > CURRENT_TIMESTAMP
+    ORDER BY created_at DESC LIMIT 1;
+    IF code_record.id IS NOT NULL THEN
+        UPDATE public.email_verification_codes SET attempts = attempts + 1 WHERE id = code_record.id;
+        IF code_record.code = input_code AND code_record.attempts < 5 THEN
+            UPDATE public.email_verification_codes SET verified = true, verified_at = CURRENT_TIMESTAMP WHERE id = code_record.id;
+            UPDATE public.user_profiles SET email_verified = true WHERE id = user_uuid;
+            is_valid := true;
+        END IF;
+    END IF;
+    RETURN is_valid;
+END; $$;
+
+-- 4. Create table if not exists
+CREATE TABLE IF NOT EXISTS public.email_verification_codes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
+    email TEXT NOT NULL,
+    code TEXT NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP + INTERVAL '10 minutes'),
+    verified BOOLEAN DEFAULT false,
+    attempts INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    verified_at TIMESTAMPTZ
+);
+
+-- 5. Create indexes
+CREATE INDEX IF NOT EXISTS idx_email_verification_codes_user_id ON public.email_verification_codes(user_id);
+CREATE INDEX IF NOT EXISTS idx_email_verification_codes_email ON public.email_verification_codes(email);
+
+═══════════════════════════════════════════════════════════════
+
+✅ اضغط "Run" في Supabase SQL Editor
+
+النتيجة المتوقعة: "Success. No rows returned" أو "Verification functions created successfully!"
+
+═══════════════════════════════════════════════════════════════
+
+بعد تنفيذ هذا SQL، جرب التسجيل مرة أخرى!
+
+═══════════════════════════════════════════════════════════════

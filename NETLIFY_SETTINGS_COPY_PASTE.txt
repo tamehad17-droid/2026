@@ -1,0 +1,41 @@
+═══════════════════════════════════════════════════════════
+🎯 إعدادات Netlify - انسخ والصق بالضبط
+═══════════════════════════════════════════════════════════
+
+Team:
+needh986-cloud's team
+
+Project name:
+promohive
+
+Branch to deploy:
+cursor/identify-application-language-3813
+
+Base directory:
+promohive
+
+Build command:
+npm run build
+
+Publish directory:
+build
+
+Functions directory:
+[اتركه فارغ]
+
+═══════════════════════════════════════════════════════════
+⚠️ مهم جداً:
+- Branch يجب أن يكون: cursor/identify-application-language-3813
+- Base directory يجب أن يكون: promohive
+- Publish directory: build فقط (ليس promohive/build)
+═══════════════════════════════════════════════════════════
+
+✅ بعد Deploy، أضف Environment Variables:
+
+VITE_SUPABASE_URL
+https://jtxmijnxrgcwjvtdlgxy.supabase.co
+
+VITE_SUPABASE_ANON_KEY
+[احصل عليه من: https://supabase.com/dashboard/project/jtxmijnxrgcwjvtdlgxy/settings/api]
+
+═══════════════════════════════════════════════════════════

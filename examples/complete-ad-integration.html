@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Ad Integration Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .article-content p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+        
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        /* Ad Styles */
+        .ad-container {
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .ad-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-ad {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Your Website</div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Header Ad Placement -->
+    <div class="container">
+        <div id="header-ad" class="ad-container"></div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="container">
+        <div class="main-layout">
+            <!-- Main Content -->
+            <main class="content">
+                <article class="article-content">
+                    <h1>Welcome to Our Website</h1>
+                    
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    
+                    <!-- Inline Ad Placement -->
+                    <div id="inline-ad-1" class="ad-container"></div>
+                    
+                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    
+                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                    
+                    <!-- Another Inline Ad -->
+                    <div id="inline-ad-2" class="ad-container"></div>
+                    
+                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+                    
+                    <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+                </article>
+            </main>
+            
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <h3>Sidebar Content</h3>
+                <p>This is sidebar content where ads can be placed.</p>
+                
+                <!-- Sidebar Ad Placement -->
+                <div id="sidebar-ad" class="ad-container"></div>
+                
+                <h4>Recent Posts</h4>
+                <ul>
+                    <li><a href="#">Post 1</a></li>
+                    <li><a href="#">Post 2</a></li>
+                    <li><a href="#">Post 3</a></li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <!-- Footer Ad Placement -->
+            <div id="footer-ad" class="ad-container"></div>
+            
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Ad Integration Script -->
+    <script>
+        // Environment Variables Configuration
+        const AD_CONFIG = {
+            // AdSterra Configuration
+            ADSTERRA_ID: 'YOUR_ADSTERRA_PUBLISHER_ID', // set your AdSterra Publisher ID
+            
+            // AdGem Configuration  
+            ADGEM_ID: '31409', // PromoHive AdGem App ID
+            
+            // General Settings
+            ENABLE_AUTO_PLACEMENT: true,
+            MAX_ADS_PER_PAGE: 4,
+            MIN_DISTANCE_BETWEEN_ADS: 500,
+            LAZY_LOADING: true
+        };
+
+        // Utility Functions
+        const utils = {
+            // Get environment variable with fallbacks
+            getEnvVar: (key) => {
+                // Check various environment variable formats
+                return window[key] || 
+                       window[`REACT_APP_${key}`] || 
+                       window[`VITE_${key}`] || 
+                       window[`NEXT_PUBLIC_${key}`] ||
+                       AD_CONFIG[key];
+            },
+            
+            // Load script asynchronously
+            loadScript: (src, retries = 3) => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.async = true;
+                    script.defer = true;
+                    
+                    const timeout = setTimeout(() => {
+                        script.remove();
+                        if (retries > 0) {
+                            console.warn(`Script timeout, retrying... (${retries} attempts left)`);
+                            utils.loadScript(src, retries - 1).then(resolve).catch(reject);
+                        } else {
+                            reject(new Error('Script loading timeout'));
+                        }
+                    }, 10000);
+                    
+                    script.onload = () => {
+                        clearTimeout(timeout);
+                        resolve();
+                    };
+                    
+                    script.onerror = () => {
+                        clearTimeout(timeout);
+                        script.remove();
+                        if (retries > 0) {
+                            console.warn(`Script error, retrying... (${retries} attempts left)`);
+                            setTimeout(() => {
+                                utils.loadScript(src, retries - 1).then(resolve).catch(reject);
+                            }, 2000);
+                        } else {
+                            reject(new Error('Failed to load script'));
+                        }
+                    };
+                    
+                    document.head.appendChild(script);
+                });
+            },
+            
+            // Create loading placeholder
+            createLoadingPlaceholder: (text = 'Loading ad...') => {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'ad-placeholder';
+                placeholder.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <div class="loading-spinner"></div>
+                        <span>${text}</span>
+                    </div>
+                `;
+                return placeholder;
+            },
+            
+            // Create error placeholder
+            createErrorPlaceholder: (message = 'Ad failed to load') => {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'error-ad';
+                placeholder.innerHTML = `
+                    <div>⚠️ ${message}</div>
+                    <div style="font-size: 12px; margin-top: 5px; opacity: 0.8;">
+                        Please check your ad configuration
+                    </div>
+                `;
+                return placeholder;
+            },
+            
+            // Detect device type
+            getDeviceType: () => {
+                const width = window.innerWidth;
+                if (width <= 768) return 'mobile';
+                if (width <= 1024) return 'tablet';
+                return 'desktop';
+            }
+        };
+
+        // AdSterra Widget Class
+        class AdSterraWidget {
+            constructor(containerId, options = {}) {
+                this.containerId = containerId;
+                this.container = document.getElementById(containerId);
+                this.options = {
+                    placement: 'header',
+                    adType: 'banner',
+                    responsive: true,
+                    ...options
+                };
+                this.adsterraId = utils.getEnvVar('ADSTERRA_ID');
+                this.loaded = false;
+                
+                if (!this.container) {
+                    console.error(`AdSterra: Container ${containerId} not found`);
+                    return;
+                }
+                
+                if (!this.adsterraId) {
+                    console.error('AdSterra: Publisher ID not found');
+                    this.showError('AdSterra ID not configured');
+                    return;
+                }
+                
+                this.init();
+            }
+            
+            async init() {
+                try {
+                    this.showLoading();
+                    await this.loadAdSterraScript();
+                    await this.renderAd();
+                } catch (error) {
+                    console.error('AdSterra initialization error:', error);
+                    this.showError(error.message);
+                }
+            }
+            
+            async loadAdSterraScript() {
+                if (window.adsterra) return;
+                
+                await utils.loadScript('https://pl19566160.profitablegatecpm.com/js/adsterra.js');
+                
+                if (!window.adsterra) {
+                    throw new Error('AdSterra script loaded but API not available');
+                }
+            }
+            
+            async renderAd() {
+                const adConfig = this.getAdConfig();
+                const adId = `adsterra-${this.containerId}-${Date.now()}`;
+                
+                // Create ad container
+                const adContainer = document.createElement('div');
+                adContainer.id = adId;
+                adContainer.style.cssText = this.getContainerStyles();
+                
+                this.container.innerHTML = '';
+                this.container.appendChild(adContainer);
+                
+                // Initialize AdSterra
+                window.adsterra.cmd = window.adsterra.cmd || [];
+                window.adsterra.cmd.push(() => {
+                    try {
+                        window.adsterra.display({
+                            ...adConfig,
+                            container: adId
+                        });
+                        this.loaded = true;
+                    } catch (error) {
+                        this.showError('Failed to display ad');
+                    }
+                });
+            }
+            
+            getAdConfig() {
+                const device = utils.getDeviceType();
+                const { placement, adType } = this.options;
+                
+                const baseConfig = {
+                    key: this.adsterraId,
+                    placement: placement,
+                    device: device
+                };
+                
+                switch (adType) {
+                    case 'banner':
+                        return {
+                            ...baseConfig,
+                            format: 'banner',
+                            width: device === 'mobile' ? 320 : placement === 'sidebar' ? 300 : 728,
+                            height: device === 'mobile' ? 50 : placement === 'sidebar' ? 250 : 90
+                        };
+                    case 'native':
+                        return {
+                            ...baseConfig,
+                            format: 'native',
+                            width: '100%',
+                            height: 'auto'
+                        };
+                    default:
+                        return baseConfig;
+                }
+            }
+            
+            getContainerStyles() {
+                const { placement, responsive } = this.options;
+                
+                let styles = 'display: block; text-align: center; margin: 10px 0;';
+                
+                if (responsive) {
+                    switch (placement) {
+                        case 'header':
+                            styles += 'max-width: 728px; margin: 0 auto 20px;';
+                            break;
+                        case 'sidebar':
+                            styles += 'max-width: 300px;';
+                            break;
+                        case 'footer':
+                            styles += 'max-width: 728px; margin: 20px auto 0;';
+                            break;
+                    }
+                }
+                
+                return styles;
+            }
+            
+            showLoading() {
+                const placeholder = utils.createLoadingPlaceholder('Loading AdSterra ad...');
+                this.container.innerHTML = '';
+                this.container.appendChild(placeholder);
+            }
+            
+            showError(message) {
+                const placeholder = utils.createErrorPlaceholder(message);
+                this.container.innerHTML = '';
+                this.container.appendChild(placeholder);
+            }
+        }
+
+        // AdGem Widget Class
+        class AdGemWidget {
+            constructor(containerId, options = {}) {
+                this.containerId = containerId;
+                this.container = document.getElementById(containerId);
+                this.options = {
+                    placement: 'sidebar',
+                    widgetType: 'offerwall',
+                    responsive: true,
+                    ...options
+                };
+                this.adgemId = utils.getEnvVar('ADGEM_ID');
+                this.loaded = false;
+                
+                if (!this.container) {
+                    console.error(`AdGem: Container ${containerId} not found`);
+                    return;
+                }
+                
+                if (!this.adgemId) {
+                    console.error('AdGem: App ID not found');
+                    this.showError('AdGem ID not configured');
+                    return;
+                }
+                
+                this.init();
+            }
+            
+            async init() {
+                try {
+                    this.showLoading();
+                    await this.loadAdGemScript();
+                    await this.renderWidget();
+                } catch (error) {
+                    console.error('AdGem initialization error:', error);
+                    this.showError(error.message);
+                }
+            }
+            
+            async loadAdGemScript() {
+                if (window.AdGem) return;
+                
+                await utils.loadScript('https://api.adgem.com/v1/wall/js');
+                
+                if (!window.AdGem) {
+                    throw new Error('AdGem script loaded but API not available');
+                }
+            }
+            
+            async renderWidget() {
+                const widgetConfig = this.getWidgetConfig();
+                const widgetId = `adgem-${this.containerId}-${Date.now()}`;
+                
+                // Create widget container
+                const widgetContainer = document.createElement('div');
+                widgetContainer.id = widgetId;
+                widgetContainer.style.cssText = this.getContainerStyles();
+                
+                this.container.innerHTML = '';
+                this.container.appendChild(widgetContainer);
+                
+                // Initialize AdGem
+                try {
+                    window.AdGem.init({
+                        ...widgetConfig,
+                        container: widgetId,
+                        onReady: () => {
+                            this.loaded = true;
+                        },
+                        onError: (error) => {
+                            this.showError('Failed to load widget');
+                        },
+                        onOfferCompleted: (offerData) => {
+                            this.showOfferCompletedNotification(offerData);
+                        }
+                    });
+                } catch (error) {
+                    this.showError('Failed to initialize widget');
+                }
+            }
+            
+            getWidgetConfig() {
+                const device = utils.getDeviceType();
+                const { placement, widgetType } = this.options;
+                
+                const baseConfig = {
+                    appId: this.adgemId,
+                    placement: placement,
+                    device: device,
+                    theme: 'auto'
+                };
+                
+                switch (widgetType) {
+                    case 'offerwall':
+                        return {
+                            ...baseConfig,
+                            type: 'offerwall',
+                            width: device === 'mobile' ? '100%' : placement === 'sidebar' ? 300 : 600,
+                            height: device === 'mobile' ? 400 : placement === 'sidebar' ? 500 : 600
+                        };
+                    case 'banner':
+                        return {
+                            ...baseConfig,
+                            type: 'banner',
+                            width: device === 'mobile' ? 320 : placement === 'sidebar' ? 300 : 728,
+                            height: device === 'mobile' ? 50 : placement === 'sidebar' ? 250 : 90
+                        };
+                    default:
+                        return baseConfig;
+                }
+            }
+            
+            getContainerStyles() {
+                const { placement, responsive } = this.options;
+                
+                let styles = 'display: block; text-align: center; margin: 10px 0; border-radius: 12px; overflow: hidden;';
+                
+                if (responsive) {
+                    switch (placement) {
+                        case 'header':
+                            styles += 'max-width: 600px; margin: 0 auto 20px;';
+                            break;
+                        case 'sidebar':
+                            styles += 'max-width: 300px;';
+                            break;
+                        case 'footer':
+                            styles += 'max-width: 600px; margin: 20px auto 0;';
+                            break;
+                    }
+                }
+                
+                return styles;
+            }
+            
+            showOfferCompletedNotification(offerData) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #00d4ff, #ff0080);
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                    z-index: 10000;
+                    font-family: inherit;
+                    font-size: 14px;
+                    max-width: 300px;
+                `;
+                
+                notification.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <div style="font-size: 20px; margin-right: 10px;">🎉</div>
+                        <div>
+                            <div style="font-weight: bold;">Offer Completed!</div>
+                            <div style="font-size: 12px; opacity: 0.9;">${offerData.name || 'Great job!'}</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 4000);
+            }
+            
+            showLoading() {
+                const placeholder = utils.createLoadingPlaceholder('Loading AdGem widget...');
+                this.container.innerHTML = '';
+                this.container.appendChild(placeholder);
+            }
+            
+            showError(message) {
+                const placeholder = utils.createErrorPlaceholder(message);
+                this.container.innerHTML = '';
+                this.container.appendChild(placeholder);
+            }
+        }
+
+        // Auto Placement Manager
+        class AdPlacementManager {
+            constructor(options = {}) {
+                this.options = {
+                    enableAutoPlacement: true,
+                    maxAdsPerPage: 4,
+                    minDistanceBetweenAds: 500,
+                    ...options
+                };
+                this.placements = [];
+                this.widgets = [];
+                
+                if (this.options.enableAutoPlacement) {
+                    this.analyzePage();
+                } else {
+                    this.initializeManualPlacements();
+                }
+            }
+            
+            analyzePage() {
+                console.log('Analyzing page for optimal ad placements...');
+                
+                // Wait for DOM to be fully loaded
+                setTimeout(() => {
+                    this.detectPlacements();
+                    this.initializeWidgets();
+                }, 1000);
+            }
+            
+            detectPlacements() {
+                const detectedPlacements = [];
+                
+                // Header placement
+                const header = document.querySelector('header');
+                if (header) {
+                    detectedPlacements.push({
+                        id: 'auto-header',
+                        type: 'header',
+                        adType: 'adsterra',
+                        widgetType: 'banner',
+                        priority: 1
+                    });
+                }
+                
+                // Sidebar placement
+                const sidebar = document.querySelector('aside, .sidebar');
+                if (sidebar) {
+                    detectedPlacements.push({
+                        id: 'auto-sidebar',
+                        type: 'sidebar',
+                        adType: 'adgem',
+                        widgetType: 'offerwall',
+                        priority: 2
+                    });
+                }
+                
+                // Footer placement
+                const footer = document.querySelector('footer');
+                if (footer) {
+                    detectedPlacements.push({
+                        id: 'auto-footer',
+                        type: 'footer',
+                        adType: 'adsterra',
+                        widgetType: 'banner',
+                        priority: 4
+                    });
+                }
+                
+                this.placements = detectedPlacements
+                    .sort((a, b) => a.priority - b.priority)
+                    .slice(0, this.options.maxAdsPerPage);
+            }
+            
+            initializeWidgets() {
+                this.placements.forEach(placement => {
+                    const containerId = `${placement.id}-container`;
+                    
+                    // Create container if it doesn't exist
+                    let container = document.getElementById(containerId);
+                    if (!container) {
+                        container = document.createElement('div');
+                        container.id = containerId;
+                        container.className = 'auto-ad-placement';
+                        
+                        // Insert container in appropriate location
+                        this.insertContainer(container, placement);
+                    }
+                    
+                    // Initialize widget
+                    if (placement.adType === 'adsterra') {
+                        this.widgets.push(new AdSterraWidget(containerId, {
+                            placement: placement.type,
+                            adType: placement.widgetType
+                        }));
+                    } else {
+                        this.widgets.push(new AdGemWidget(containerId, {
+                            placement: placement.type,
+                            widgetType: placement.widgetType
+                        }));
+                    }
+                });
+            }
+            
+            insertContainer(container, placement) {
+                switch (placement.type) {
+                    case 'header':
+                        const header = document.querySelector('header');
+                        if (header) {
+                            header.parentNode.insertBefore(container, header.nextSibling);
+                        }
+                        break;
+                    case 'sidebar':
+                        const sidebar = document.querySelector('aside, .sidebar');
+                        if (sidebar) {
+                            sidebar.appendChild(container);
+                        }
+                        break;
+                    case 'footer':
+                        const footer = document.querySelector('footer');
+                        if (footer) {
+                            footer.insertBefore(container, footer.firstChild);
+                        }
+                        break;
+                }
+            }
+            
+            initializeManualPlacements() {
+                // Initialize manual placements
+                this.widgets = [
+                    new AdSterraWidget('header-ad', { placement: 'header', adType: 'banner' }),
+                    new AdGemWidget('sidebar-ad', { placement: 'sidebar', widgetType: 'offerwall' }),
+                    new AdSterraWidget('inline-ad-1', { placement: 'inline', adType: 'native' }),
+                    new AdGemWidget('inline-ad-2', { placement: 'inline', widgetType: 'banner' }),
+                    new AdSterraWidget('footer-ad', { placement: 'footer', adType: 'banner' })
+                ];
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Initializing Ad Integration System...');
+            
+            // Check if environment variables are configured
+            const adsterraId = utils.getEnvVar('ADSTERRA_ID');
+            const adgemId = utils.getEnvVar('ADGEM_ID');
+            
+            if (!adsterraId && !adgemId) {
+                console.warn('No ad network IDs configured. Please set ADSTERRA_ID and/or ADGEM_ID.');
+                return;
+            }
+            
+            // Initialize Ad Placement Manager
+            window.adManager = new AdPlacementManager({
+                enableAutoPlacement: AD_CONFIG.ENABLE_AUTO_PLACEMENT,
+                maxAdsPerPage: AD_CONFIG.MAX_ADS_PER_PAGE,
+                minDistanceBetweenAds: AD_CONFIG.MIN_DISTANCE_BETWEEN_ADS
+            });
+            
+            console.log('Ad Integration System initialized successfully!');
+        });
+
+        // Export for manual use
+        window.AdSterraWidget = AdSterraWidget;
+        window.AdGemWidget = AdGemWidget;
+        window.AdPlacementManager = AdPlacementManager;
+    </script>
+</body>
+</html>

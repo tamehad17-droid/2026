@@ -1,0 +1,4 @@
+{
+  "type": "module",
+  "exports": "./test_database.js"
+}

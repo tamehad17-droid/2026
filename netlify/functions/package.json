@@ -1,0 +1,9 @@
+{
+  "name": "promohive-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions for PromoHive",
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  }
+}

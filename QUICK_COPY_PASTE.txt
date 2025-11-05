@@ -1,0 +1,71 @@
+═══════════════════════════════════════════════════════════════
+📋 ملف النسخ السريع - انسخ والصق مباشرة
+═══════════════════════════════════════════════════════════════
+
+🔗 روابط مباشرة للدخول:
+───────────────────────────────────────────────────────────────
+
+1. SQL Editor (الخطوة 1):
+https://supabase.com/dashboard/project/jtxmijnxrgcwjvtdlgxy/sql/new
+
+2. Edge Functions (الخطوة 2):
+https://supabase.com/dashboard/project/jtxmijnxrgcwjvtdlgxy/functions
+
+3. Settings - Secrets (الخطوة 3):
+https://supabase.com/dashboard/project/jtxmijnxrgcwjvtdlgxy/settings/functions
+
+4. Resend API Keys:
+https://resend.com/api-keys
+
+═══════════════════════════════════════════════════════════════
+📝 الخطوة 1: SQL لإصلاح التسجيل (انسخ هذا)
+═══════════════════════════════════════════════════════════════
+
+CREATE OR REPLACE FUNCTION public.handle_new_user_with_verification()
+RETURNS TRIGGER
+SECURITY DEFINER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    referral_code_text TEXT;
+BEGIN
+    referral_code_text := UPPER(SUBSTRING(NEW.id::TEXT FROM 1 FOR 8));
+    
+    INSERT INTO public.user_profiles (
+        id, email, full_name, role, status, 
+        approval_status, email_verified, referral_code, 
+        level, welcome_bonus_used
+    )
+    VALUES (
+        NEW.id, NEW.email, 
+        COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1)),
+        COALESCE(NEW.raw_user_meta_data->>'role', 'user')::user_role,
+        'pending'::user_status, 'pending', false, 
+        referral_code_text, 0, false
+    );
+    
+    RETURN NEW;
+END;
+$$;
+
+═══════════════════════════════════════════════════════════════
+📧 الخطوة 2: اسماء الدالات
+═══════════════════════════════════════════════════════════════
+
+Function 1 Name: send-verification-email
+Function 2 Name: send-notification-email
+
+الكود موجود في:
+- promohive/supabase/functions/send-verification-email/index.ts
+- promohive/supabase/functions/send-notification-email/index.ts
+
+═══════════════════════════════════════════════════════════════
+🔐 الخطوة 3: Secret Name
+═══════════════════════════════════════════════════════════════
+
+Secret Name: RESEND_API_KEY
+Secret Value: [احصل عليه من https://resend.com/api-keys]
+
+═══════════════════════════════════════════════════════════════
+✅ تم! الآن جرب التسجيل في تطبيقك
+═══════════════════════════════════════════════════════════════
